@@ -11,7 +11,7 @@
     "build": "tsc",
     "prebuild": "npm run clean",
     "clean": "rm -rf ./build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "notion",
@@ -37,7 +37,10 @@
   "homepage": "https://github.com/souvikinator/notion-to-md#readme",
   "description": "convert notion pages, block and list of blocks to markdown (supports nesting)",
   "devDependencies": {
-    "@notionhq/client": "^0.4.11",
+    "@notionhq/client": "^0.4.12",
+    "@types/jest": "^27.4.0",
+    "jest": "^27.4.7",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.5.4"
   }
 }

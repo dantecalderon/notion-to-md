@@ -1,3 +1,5 @@
+import { parseCaption } from "./dantecalderon.utils";
+
 export const inlineCode = (text: string) => {
   return `\`${text}\``;
 };
@@ -53,8 +55,19 @@ export const todo = (text: string, checked: boolean) => {
   return checked ? `- [x] ${text}` : `- [ ] ${text}`;
 };
 
-export const image = (alt: string, href: string) => {
-  return `![${alt}](${href})`;
+export const image = (captionData: string, href: string) => {
+  const { caption, options } = parseCaption(captionData);
+  let md = `![${caption}](${href})`;
+
+  if(options.width) {
+    md = `<div class="mdx-image-container with-border wone g1" style="max-width: ${options.width}px; border-color: red;">
+
+${md}
+
+</div>`
+  }
+  
+  return md;
 };
 
 export const addTabSpace = (text: string, n = 0) => {
