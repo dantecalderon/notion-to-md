@@ -64,6 +64,7 @@ export const image = (captionData: string, href: string) => {
 
 ${md}
 
+${caption ? '<figcaption class="gatsby-resp-image-figcaption">' + caption + '</figcaption>' : '' }
 </div>`
   }
   
