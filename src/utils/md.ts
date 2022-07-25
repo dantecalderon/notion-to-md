@@ -1,4 +1,6 @@
 import { parseCaption } from "./dantecalderon.utils";
+import { CalloutIcon } from "../types";
+import markdownTable from "markdown-table";
 
 export const inlineCode = (text: string) => {
   return `\`${text}\``;
@@ -47,8 +49,19 @@ export const quote = (text: string) => {
   return `> ${text.replace(/\n/g, "  \n>")}`;
 };
 
-export const bullet = (text: string) => {
-  return `- ${text}`;
+export const callout = (text: string, icon?: CalloutIcon) => {
+  let emoji: string | undefined;
+  if (icon?.type === "emoji") {
+    emoji = icon.emoji;
+  }
+
+  // the replace is done to handle multiple lines
+  return `> ${emoji ? emoji + " " : ""}${text.replace(/\n/g, "  \n>")}`;
+};
+
+export const bullet = (text: string, count?: number) => {
+  let renderText = text.trim();
+  return count ? `${count}. ${renderText}` : `- ${renderText}`;
 };
 
 export const todo = (text: string, checked: boolean) => {
@@ -73,10 +86,29 @@ ${caption ? '<figcaption class="gatsby-resp-image-figcaption">' + caption + '</f
 
 export const addTabSpace = (text: string, n = 0) => {
   const tab = "	";
-  for (let i = 0; i < n; i++) text = tab + text;
+  for (let i = 0; i < n; i++) {
+    if (text.includes("\n")) {
+      const multiLineText = text.split(/(?<=\n)/).join(tab);
+      text = tab + multiLineText;
+    } else text = tab + text;
+  }
   return text;
 };
 
 export const divider = () => {
   return "---";
+};
+
+export const toggle = (summary?: string, children?: string) => {
+  if (!summary) return children || "";
+  return `<details>
+  <summary>${summary}</summary>
+
+${children || ""}
+
+  </details>`;
+};
+
+export const table = (cells: string[][]) => {
+  return markdownTable(cells);
 };
