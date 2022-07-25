@@ -1,6 +1,6 @@
 {
   "name": "@dantehemerson2/notion-to-md",
-  "version": "2.2.2",
+  "version": "2.5.3",
   "engines": {
     "node": ">=12"
   },
