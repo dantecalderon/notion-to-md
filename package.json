@@ -1,5 +1,5 @@
 {
-  "name": "notion-to-md",
+  "name": "@dantehemerson/notion-to-md",
   "version": "2.5.3",
   "engines": {
     "node": ">=12"
@@ -25,6 +25,9 @@
   ],
   "author": "Souvik Kar Mahapatra <souvikat001+chitchat@gmail.com>",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "build/**"
   ],
