@@ -25,6 +25,9 @@
   ],
   "author": "Souvik Kar Mahapatra <souvikat001+chitchat@gmail.com>",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "build/**"
   ],
