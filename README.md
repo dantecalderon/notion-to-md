@@ -1,10 +1,16 @@
 <img src="https://imgur.com/WgXdz9r.png" />
 
+> 💡 For better readability and detailed instructions headover to the [wiki](https://github.com/souvikinator/notion-to-md/wiki)
+
 # Notion to Markdown
 
 Convert notion pages, block and list of blocks to markdown (supports nesting) using **[notion-sdk-js](https://github.com/makenotion/notion-sdk-js)**
 
 > **Note:** Before getting started, create [an integration and find the token](https://www.notion.so/my-integrations).
+
+<a href="https://www.producthunt.com/posts/notion-to-md?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-notion&#0045;to&#0045;md" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=351669&theme=light" alt="notion&#0045;to&#0045;md - Programmatically&#0032;convert&#0032;notion&#0032;pages&#0032;to&#0032;markdown | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O1AFCJR)
 
 ## Todo
 
@@ -18,14 +24,14 @@ Convert notion pages, block and list of blocks to markdown (supports nesting) us
 - [x] code block
 - [x] strikethrough, underline, bold, italic
 - [x] nested blocks
-- [ ] pages inside pages/child page
 - [x] embeds, bookmarks, videos, files (converted to links)
-- [ ] tables
+- [x] Simple tables
+- [x] toggle 
 - [x] divider
 - [x] equation block (converted to code blocks)
 - [x] convert returned markdown object to string (`toMarkdownString()`)
 - [x] typescript support
-- [ ] add tests
+- [x] add tests
 
 ## Install
 
@@ -173,13 +179,13 @@ const n2m = new NotionToMarkdown({ notionClient: notion });
 
 - only takes a single notion block and returns corresponding markdown string
 - nesting is ignored
-- independent of @notionhq/client
+- depends on @notionhq/client
 
 ```js
 const { NotionToMarkdown } = require("notion-to-md");
 
-// notion client not required
-const n2m = new NotionToMarkdown();
+// passing notion client to the option
+const n2m = new NotionToMarkdown({ notionClient: notion });
 
 const result = n2m.blockToMarkdown(block);
 console.log(result);
@@ -191,48 +197,37 @@ console.log(result);
 ![image](https://media.giphy.com/media/Ju7l5y9osyymQ/giphy.gif)
 ```
 
-## API
+## Custom Transformers
+You can define your own custom transformer for a notion type, to parse and return your own string.
+`setCustomTransformer(type, func)` will overload the parsing for the giving type.
 
-> ### `toMarkdownString(mdBlock[])`
->
-> - takes output of `pageToMarkdown` or `blocksToMarkdown` as argument
-> - converts to markdown string.
-
-> ### `pageToMarkdown(id,totalPage)`
->
-> - Uses `blocksToMarkdown` internally.
-> - `id`(pageid) as input and converts all the blocks in the page to corresponding markdown object
-> - `totalPage` is the retrieve block children request number i.e `page_size Maximum = totalPage * 100`.
-
-> ### totalPage
->
-> Default value is `1` which means only `100` blocks will be converted to markdown and rest will be ignored (due to notion api limitations, ref: [#9](https://github.com/souvikinator/notion-to-md/pull/9)).
->
-> ### How to use `totalPage` arg ?
->
-> - if the notion page contains less than or equal `100` blocks then `totalPage` arg is not required.
-> - if the notion page contains `150` blocks then `totalPage` argument should be greater than or equal to `2` leading to `pageSize = 2 * 100` and rendering all `150` blocks.
-
-> ### `blocksToMarkdown(blocks,totalPage)`
->
-> **Note**: requires <u>**notion-sdk-js**</u> unlike `blockToMarkdown`
->
-> - `blocks`: array of notion blocks
-> - `totalPage`: the retrieve block children request number i.e `page_size Maximum = totalPage * 100`.
-> - deals with <u>**nested blocks**</u>
-> - uses `blockToMarkdown` internally.
-
-> ### `blockToMarkdown(block)`
->
-> - Takes single notion block and converts to markdown string
-> - does not deal with nested notion blocks
-> - This method doesn't require the `notion-sdk-js`.
-> - Refer docs to know more about [notion blocks](https://developers.notion.com/reference/block)
+```js
+const { NotionToMarkdown } = require("notion-to-md");
+const n2m = new NotionToMarkdown({ notionClient: notion });
+n2m.setCustomTransformer('embed', async (block) => {
+  const {embed} = block as any;
+  if (!embed?.url) return '';
+  return `<figure>
+  <iframe src="${embed?.url}"></iframe>
+  <figcaption>${await n2m.blockToMarkdown(embed?.caption)}</figcaption>
+</figure>`;
+});
+const result = n2m.blockToMarkdown(block);
+// Result will now parse the `embed` type with your custom function. 
+```
+**Note** Be aware that `setCustomTransformer` will take only the last function for the given type. You can't set two different transforms for the same type.
 
 ## Contribution
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
+
+## Contributers
+
+<a href="https://github.com/souvikinator/notion-to-md/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=souvikinator/notion-to-md" />
+</a>
+
 
 ## License
 
